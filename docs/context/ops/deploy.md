@@ -463,6 +463,10 @@ job's credentials. `treg-worker --help` lists them; what follows is what a sched
   `TREG_PLATFORM_OPENROUTER_MANAGEMENT_KEY` and `TREG_PLATFORM_FISHAUDIO_WORKSPACE_ID` when those
   balances should be observed.
 - **`asynctasks settle`** completes durable holds for asynchronous upstream operations.
+- **`holds reap`**: every minute. Releases holds older than `call_timeout_s + hold_grace_s` for
+  every org ([money](../architecture/money.md), "The hold reaper"). Once it runs on a schedule, set
+  `TREG_RESERVE_REAPS_STALE_HOLDS=false` so reserve stops scanning for them; until then the lazy reap
+  is the only one. A run reads at most `--max-batches` batches; the next run continues.
 - **`billing reconcile`** checks the top-ups Stripe collected against the ledger
   ([money](../architecture/money.md), "Reconciliation against Stripe"); run it at least daily with an
   overlapping `--hours`. It exits 1 on a gap and posts to `TREG_OPS_SLACK_WEBHOOK_URL` when set.
